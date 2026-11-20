@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ApplyFlow helps students organize job and internship applications, deadlines, interviews, and offers.">
+  <title>ApplyFlow — Job Application Tracker</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="ApplyFlow home">
+        <span class="brand-mark">A</span>
+        <span>ApplyFlow</span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-menu" aria-label="Main navigation">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">▦</span> Dashboard</button>
+        <button class="nav-link" data-view="applications"><span class="nav-icon">▤</span> Applications <span class="nav-count" id="navAppCount">0</span></button>
+        <button class="nav-link" data-view="kanban"><span class="nav-icon">▥</span> Kanban board</button>
+        <button class="nav-link" data-view="deadlines"><span class="nav-icon">◷</span> Deadlines</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="tip-card">
+          <div class="tip-icon">✦</div>
+          <strong>Small steps, big career.</strong>
+          <p>Keep your applications organized and make every opportunity count.</p>
+        </div>
+        <button class="nav-link" id="themeToggle"><span class="nav-icon" id="themeIcon">◐</span> Toggle appearance</button>
+        <div class="profile-row">
+          <div class="avatar">Y</div>
+          <div class="profile-copy"><strong>Your workspace</strong><span>Personal tracker</span></div>
+          <span class="profile-dots">•••</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu icon-button" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageCrumb">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <div class="today-label" id="todayLabel"></div>
+          <button class="icon-button notification-button" id="notificationsButton" aria-label="View deadline reminders" title="Deadline reminders">♧<span class="notification-dot" id="notificationDot"></span></button>
+          <button class="primary-button" id="addApplicationTop"><span>＋</span> Add application</button>
+        </div>
+      </header>
+
+      <section class="view active-view" id="dashboardView">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR CAREER AT A GLANCE</p><h1>Good things take <span class="heading-accent">progress.</span></h1><p class="subheading">Stay on top of every opportunity, one application at a time.</p></div>
+          <button class="secondary-button" id="loadSampleButton">↻ Load demo data</button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total applications</span><span class="stat-icon purple">▤</span></div><div class="stat-value" id="statTotal">0</div><div class="stat-foot"><span class="stat-dot purple-dot"></span> All tracked opportunities</div></article>
+          <article class="stat-card"><div class="stat-top"><span>In progress</span><span class="stat-icon blue">◷</span></div><div class="stat-value" id="statProgress">0</div><div class="stat-foot"><span class="stat-dot blue-dot"></span> Active applications</div></article>
+          <article class="stat-card"><div class="stat-top"><span>Interviews</span><span class="stat-icon orange">♙</span></div><div class="stat-value" id="statInterviews">0</div><div class="stat-foot"><span class="stat-dot orange-dot"></span> Interview stage</div></article>
+          <article class="stat-card"><div class="stat-top"><span>Offers received</span><span class="stat-icon green">✦</span></div><div class="stat-value" id="statOffers">0</div><div class="stat-foot"><span class="stat-dot green-dot"></span> Great work — keep going!</div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel applications-panel">
+            <div class="panel-heading"><div><h2>Recent applications</h2><p>Your latest career opportunities</p></div><button class="text-button" data-go="applications">View all <span>→</span></button></div>
+            <div class="table-wrap">
+              <table class="applications-table">
+                <thead><tr><th>COMPANY / ROLE</th><th>STATUS</th><th>APPLIED ON</th><th>DEADLINE</th><th></th></tr></thead>
+                <tbody id="recentApplicationsBody"></tbody>
+              </table>
+              <div class="empty-state compact-empty" id="recentEmpty"><div class="empty-illustration">▤</div><h3>No applications yet</h3><p>Add your first opportunity to get started.</p><button class="primary-button small-button" data-add>＋ Add application</button></div>
+            </div>
+          </section>
+
+          <section class="panel deadlines-panel">
+            <div class="panel-heading"><div><h2>Upcoming deadlines</h2><p>Keep an eye on what's next</p></div><button class="text-button" data-go="deadlines">See all <span>→</span></button></div>
+            <div id="dashboardDeadlines" class="deadline-list"></div>
+            <div class="empty-state compact-empty" id="deadlinesEmpty"><div class="empty-illustration">◷</div><h3>All clear for now</h3><p>Add a deadline to keep track of important dates.</p></div>
+          </section>
+        </div>
+
+        <div class="dashboard-grid bottom-grid">
+          <section class="panel analytics-panel">
+            <div class="panel-heading"><div><h2>Application pipeline</h2><p>Where your applications stand</p></div><span class="mini-label">ALL TIME</span></div>
+            <div id="pipelineChart" class="pipeline-chart"></div>
+          </section>
+          <section class="panel insight-panel">
+            <div class="panel-heading"><div><h2>Your progress</h2><p>A quick look at your search</p></div><span class="insight-spark">✦</span></div>
+            <div class="progress-highlight"><div class="progress-number" id="responseRate">0%</div><div><strong>Response rate</strong><p>Applications that have moved beyond “Applied”.</p></div></div>
+            <div class="progress-track"><span id="responseProgress"></span></div>
+            <div class="insight-note"><span>💡</span><p><strong>Tip:</strong> A thoughtful follow-up can help keep a conversation moving. Set a follow-up date on an application to remind yourself.</p></div>
+          </section>
+        </div>
+        <footer class="app-footer">Made for your next opportunity <span>✦</span> <span class="footer-right">ApplyFlow · Frontend project</span></footer>
+      </section>
+
+      <section class="view" id="applicationsView">
+        <div class="page-heading compact-heading"><div><p class="eyebrow">YOUR OPPORTUNITIES</p><h1>Applications</h1><p class="subheading">Every opportunity, organized in one place.</p></div><button class="primary-button" data-add>＋ Add application</button></div>
+        <div class="panel toolbar-panel">
+          <div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search company or role..." aria-label="Search applications"></div>
+          <select id="statusFilter" aria-label="Filter by status"><option value="">All statuses</option><option>Wishlist</option><option>Applied</option><option>Assessment</option><option>Interview</option><option>Offer</option><option>Rejected</option></select>
+          <select id="typeFilter" aria-label="Filter by job type"><option value="">All job types</option><option>Internship</option><option>Full-time</option><option>Part-time</option><option>Contract</option></select>
+          <select id="sortFilter" aria-label="Sort applications"><option value="updated">Recently updated</option><option value="deadline">Nearest deadline</option><option value="company">Company A–Z</option><option value="applied">Application date</option></select>
+          <button class="secondary-button" id="clearFilters">Reset</button>
+        </div>
+        <div class="list-summary"><span id="listCount">0 applications</span><div class="view-switch"><button class="view-switch-button active" id="tableViewButton" title="Table view">☷</button><button class="view-switch-button" id="cardViewButton" title="Card view">▦</button></div></div>
+        <section class="panel table-panel" id="allTablePanel"><div class="table-wrap"><table class="applications-table full-table"><thead><tr><th>COMPANY / ROLE</th><th>TYPE</th><th>STATUS</th><th>APPLIED ON</th><th>DEADLINE</th><th></th></tr></thead><tbody id="allApplicationsBody"></tbody></table></div><div class="empty-state" id="allEmpty"><div class="empty-illustration">⌕</div><h3>No matching applications</h3><p>Try changing your filters or add a new opportunity.</p><button class="primary-button small-button" data-add>＋ Add application</button></div></section>
+        <div class="application-card-grid" id="applicationCardGrid"></div>
+        <div class="data-tools"><div><strong>Your data stays in your browser.</strong><p>Export a backup or import a previously exported CSV file.</p></div><div class="data-actions"><button class="secondary-button" id="importButton">↑ Import CSV</button><button class="secondary-button" id="exportButton">↓ Export CSV</button><input type="file" id="importFile" accept=".csv,text/csv" hidden></div></div>
+      </section>
+
+      <section class="view" id="kanbanView">
+        <div class="page-heading compact-heading"><div><p class="eyebrow">VISUAL WORKFLOW</p><h1>Kanban board</h1><p class="subheading">Move opportunities through your application journey.</p></div><button class="primary-button" data-add>＋ Add application</button></div>
+        <div class="kanban-help"><span>↔</span> Drag an application card into another column to update its status.</div>
+        <div class="kanban-board" id="kanbanBoard"></div>
+      </section>
+
+      <section class="view" id="deadlinesView">
+        <div class="page-heading compact-heading"><div><p class="eyebrow">NEVER MISS A DATE</p><h1>Deadlines & follow-ups</h1><p class="subheading">Stay prepared for assessments, interviews, and recruiter follow-ups.</p></div><button class="primary-button" data-add>＋ Add application</button></div>
+        <div class="deadline-summary-grid">
+          <div class="deadline-summary-card"><span>Upcoming (7 days)</span><strong id="deadlineUpcomingCount">0</strong></div>
+          <div class="deadline-summary-card"><span>Overdue</span><strong id="deadlineOverdueCount">0</strong></div>
+          <div class="deadline-summary-card"><span>Follow-ups due</span><strong id="followupDueCount">0</strong></div>
+        </div>
+        <div class="panel deadline-page-panel"><div class="panel-heading"><div><h2>Deadline planner</h2><p>Sorted by the next date that needs your attention</p></div><select id="deadlineFilter" aria-label="Filter deadlines"><option value="all">All dates</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="followup">Follow-ups</option></select></div><div id="allDeadlinesList" class="deadline-page-list"></div><div class="empty-state" id="allDeadlinesEmpty"><div class="empty-illustration">✓</div><h3>No deadlines to show</h3><p>You're all caught up. Add deadlines or follow-up dates to see them here.</p></div></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="applicationModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading"><div><p class="eyebrow">OPPORTUNITY DETAILS</p><h2 id="modalTitle">Add application</h2><p>Keep the important details together.</p></div><button class="icon-button close-modal" id="closeModal" aria-label="Close dialog">×</button></div>
+      <form id="applicationForm">
+        <input type="hidden" id="applicationId">
+        <div class="form-grid">
+          <label class="form-field full-field">Company name <span class="required">*</span><input id="company" name="company" type="text" maxlength="80" required placeholder="e.g. Atlassian"></label>
+          <label class="form-field full-field">Job role <span class="required">*</span><input id="role" name="role" type="text" maxlength="100" required placeholder="e.g. Software Engineer Intern"></label>
+          <label class="form-field">Job type<select id="jobType" name="jobType"><option>Internship</option><option>Full-time</option><option>Part-time</option><option>Contract</option></select></label>
+          <label class="form-field">Work mode<select id="workMode" name="workMode"><option>Remote</option><option>Hybrid</option><option>On-site</option><option>Not specified</option></select></label>
+          <label class="form-field">Status<select id="status" name="status"><option>Wishlist</option><option>Applied</option><option>Assessment</option><option>Interview</option><option>Offer</option><option>Rejected</option></select></label>
+          <label class="form-field">Application date<input id="appliedDate" name="appliedDate" type="date"></label>
+          <label class="form-field">Application deadline<input id="deadline" name="deadline" type="date"></label>
+          <label class="form-field">Follow-up date<input id="followupDate" name="followupDate" type="date"></label>
+          <label class="form-field">Stipend / salary<input id="salary" name="salary" type="text" maxlength="60" placeholder="e.g. ₹30,000/month"></label>
+          <label class="form-field full-field">Job link<input id="jobLink" name="jobLink" type="url" placeholder="https://company.com/careers"></label>
+          <label class="form-field full-field">Recruiter contact (optional)<input id="recruiter" name="recruiter" type="text" maxlength="120" placeholder="Name or email"></label>
+          <label class="form-field full-field">Notes<textarea id="notes" name="notes" rows="3" maxlength="1500" placeholder="Interview prep, requirements, or next steps..."></textarea></label>
+        </div>
+        <div class="form-error" id="formError" role="alert"></div>
+        <div class="modal-actions"><button type="button" class="secondary-button" id="cancelModal">Cancel</button><button type="submit" class="primary-button" id="saveApplicationButton">Save application</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="detailsModal" aria-hidden="true">
+    <section class="modal details-modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+      <div class="modal-heading"><div><p class="eyebrow">APPLICATION SUMMARY</p><h2 id="detailsTitle">Application details</h2></div><button class="icon-button" id="closeDetails" aria-label="Close dialog">×</button></div>
+      <div id="detailsContent"></div>
+      <div class="modal-actions"><button class="secondary-button" id="detailsCloseButton">Close</button><button class="primary-button" id="editFromDetails">Edit application</button></div>
+    </section>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div class="notification-popover" id="notificationPopover" hidden></div>
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+</body>
+</html>
