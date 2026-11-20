@@ -1,6 +1,6 @@
-# ApplyFlow — Job Application Tracker
+# BFocused — Job Application Tracker
 
-ApplyFlow is a responsive, frontend-only job and internship application tracker built with **HTML5, CSS3, and vanilla JavaScript**. It is designed as a portfolio project for students managing internships and placements.
+BFocused is a responsive, frontend-only job and internship application tracker built with **HTML5, CSS3, and vanilla JavaScript**. It is designed as a portfolio project for students managing internships and placements.
 
 ## Features
 
@@ -28,7 +28,7 @@ No frameworks, backend, database, package manager, or external JavaScript librar
 
 ## Run in VS Code
 
-1. Extract the `ApplyFlow` folder.
+1. Extract the `BFocused` folder.
 2. Open the folder in VS Code.
 3. Open `index.html` in your browser.
 
